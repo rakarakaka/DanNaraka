@@ -398,6 +398,7 @@
                 isDragging = false;
             });
 
+            // --- MOUSE MOVE FOR ROTATION AND PANNING (SHIFT KEY) ---
             container.addEventListener('mousemove', (e) => {
                 if (isDragging && currentMesh) {
                     const deltaMove = {
@@ -405,8 +406,18 @@
                         y: e.offsetY - previousMousePosition.y
                     };
 
-                    currentMesh.rotation.y += deltaMove.x * 0.01;
-                    currentMesh.rotation.x += deltaMove.y * 0.01;
+                    const sensitivity = 0.005;
+
+                    // Check for Shift key to enable Panning (moving the object side-to-side/up-down)
+                    if (e.shiftKey) {
+                        // Panning (Translation)
+                        currentMesh.position.x += deltaMove.x * sensitivity * 2.5;
+                        currentMesh.position.y -= deltaMove.y * sensitivity * 2.5;
+                    } else {
+                        // Standard Rotation (Default interaction)
+                        currentMesh.rotation.y += deltaMove.x * sensitivity;
+                        currentMesh.rotation.x += deltaMove.y * sensitivity;
+                    }
                 }
 
                 previousMousePosition = {
@@ -414,6 +425,22 @@
                     y: e.offsetY
                 };
             });
+
+            // --- ZOOM (WHEEL EVENT) ---
+            container.addEventListener('wheel', (e) => {
+                e.preventDefault(); // Prevent page scroll when zooming
+
+                // Adjust camera position based on scroll direction
+                // DeltaY is negative when scrolling up (zoom in), positive when scrolling down (zoom out)
+                camera.position.z += e.deltaY * 0.005;
+
+                // Clamp zoom to prevent going too far in or out (e.g., between 2 and 10)
+                camera.position.z = Math.max(2, Math.min(10, camera.position.z));
+
+                // Force render update after interaction
+                renderer.render(scene, camera);
+            });
+
 
             // Handle Resize
             window.addEventListener('resize', onWindowResize, false);
