@@ -272,6 +272,10 @@
                         <h4 class="font-bold">03. Infinity Loop</h4>
                         <p class="text-xs text-gray-500">Topology Study</p>
                     </div>
+                    <div class="p-4 border border-white/20 hover:border-white transition-colors cursor-pointer" onclick="changeModel('noodle')">
+                        <h4 class="font-bold">04. noodles</h4>
+                        <p class="text-xs text-gray-500">Topology Study</p>
+                    </div>
                 </div>
             </div>
 
@@ -456,6 +460,32 @@
                 // Represents Infinity
                 geometry = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
                 currentMesh = new THREE.Mesh(geometry, material);
+            }
+
+            if (type === 'noodle') {
+                // Initialize the Loader
+                const loader = new THREE.GLTFLoader();
+
+                // Load your file (Make sure the file is in the same folder as your HTML)
+                loader.load('indomi.glb', function(gltf) {
+
+                    currentMesh = gltf.scene;
+
+                    // OPTIONAL: Scale it up or down if it's too big/small
+                    currentMesh.scale.set(1, 1, 1);
+
+                    // OPTIONAL: Move it down if it's floating too high
+                    currentMesh.position.y = -1;
+
+                    // Add it to the scene
+                    scene.add(currentMesh);
+
+                }, undefined, function(error) {
+                    console.error('An error happened loading the model:', error);
+                });
+
+                // Note: We don't use 'geometry' or 'material' variables here 
+                // because the GLB file has its own colors and shapes inside it.
             }
 
             // *** HOW TO ADD YOUR OWN ASSETS ***
