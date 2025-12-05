@@ -107,7 +107,7 @@
             position: relative;
             cursor: grab;
             overflow: hidden;
-            border: 1px solid #cccccc;
+            border: 1px solid #222;
         }
         
         #canvas-container:active {
@@ -356,9 +356,11 @@
         function initThreeJS() {
             // Scene setup
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0xffffff); // Dark gray background
 
-            // Fog for depth
+            // CHANGE THIS TO WHITE:
+            scene.background = new THREE.Color(0xffffff);
+
+            // CHANGE THIS TO WHITE TOO:
             scene.fog = new THREE.FogExp2(0xffffff, 0.03);
 
             // Camera
