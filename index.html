@@ -460,26 +460,23 @@
                 // Represents Infinity
                 geometry = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
                 currentMesh = new THREE.Mesh(geometry, material);
+
             } else if (type === 'noodle') {
                 // Initialize the Loader
                 const loader = new THREE.GLTFLoader();
 
                 // Load your file (Make sure the file is in the same folder as your HTML)
                 loader.load('3Dasset/indomi.glb', function(gltf) {
+                    if (currentMesh) {
+                        scene.remove(currentMesh);
+                    }
 
                     currentMesh = gltf.scene;
 
-                    // OPTIONAL: Scale it up or down if it's too big/small
                     currentMesh.scale.set(1, 1, 1);
-
-                    // OPTIONAL: Move it down if it's floating too high
                     currentMesh.position.y = -1;
 
-                    // Add it to the scene
                     scene.add(currentMesh);
-
-                }, undefined, function(error) {
-                    console.error('An error happened loading the model:', error);
                 });
 
                 // Note: We don't use 'geometry' or 'material' variables here 
