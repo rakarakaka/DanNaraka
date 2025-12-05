@@ -438,11 +438,8 @@
                 shininess: 100
             });
 
-            if (type === 'cube') {
-                // Initialize the Loader
-                const loader = new THREE.GLTFLoader();
+            if (type === 'indomi') {
 
-                // Load your file (Make sure the file is in the same folder as your HTML)
                 loader.load('indomi.glb', function(gltf) {
 
                     currentMesh = gltf.scene;
@@ -489,6 +486,7 @@
         */
 
         scene.add(currentMesh);
+
 
         // Global function to be called from HTML buttons
         window.changeModel = function(type) {
