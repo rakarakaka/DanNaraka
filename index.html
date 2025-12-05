@@ -542,11 +542,7 @@
         function animate() {
             requestAnimationFrame(animate);
 
-            if (currentMesh) {
-                // Slow automatic rotation
-                currentMesh.rotation.x += 0.002;
-                currentMesh.rotation.y += 0.005;
-            }
+            // Removed automatic rotation. The mesh now only moves based on user input (rotation, pan, zoom).
 
             renderer.render(scene, camera);
         }
