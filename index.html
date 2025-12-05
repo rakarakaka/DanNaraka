@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAN NARAKA | Portfolio</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Three.js for 3D elements -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- GLTFLoader (Included if you want to load real models later) -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Custom Fonts */
+        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700&family=Space+Grotesk:wght@300;500;700&display=swap');
+         :root {
+            --bg-color: #050505;
+            --text-color: #f5f5f5;
+            --accent-color: #333;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        h1,
+        h2,
+        h3,
+        .display-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        /* Custom Selection Color */
+        
+         ::selection {
+            background: #ffffff;
+            color: #000000;
+        }
+        /* Scrollbar Styling */
+        
+         ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+         ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        
+         ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        
+         ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        /* Utilities */
+        
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .reveal-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .hover-underline-animation {
+            display: inline-block;
+            position: relative;
+        }
+        
+        .hover-underline-animation::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 1px;
+            bottom: 0;
+            left: 0;
+            background-color: #fff;
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+        }
+        
+        .hover-underline-animation:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+        /* 3D Container */
+        
+        #canvas-container {
+            width: 100%;
+            height: 500px;
+            position: relative;
+            cursor: grab;
+            overflow: hidden;
+            border: 1px solid #222;
+        }
+        
+        #canvas-container:active {
+            cursor: grabbing;
+        }
+        /* Glitch effect for the name */
+        
+        .glitch-wrapper {
+            position: relative;
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 mix-blend-difference px-6 py-6 flex justify-between items-center backdrop-blur-sm bg-black/50 border-b border-white/10">
+        <a href="#" class="text-xl font-bold tracking-widest uppercase hover:opacity-70 transition-opacity">DN.</a>
+        <div class="hidden md:flex space-x-8 text-sm uppercase tracking-widest">
+            <a href="#articles" class="hover-underline-animation">Articles</a>
+            <a href="#gallery" class="hover-underline-animation">Gallery</a>
+            <a href="#assets" class="hover-underline-animation">3D Lab</a>
+            <a href="#contact" class="hover-underline-animation">Contact</a>
+        </div>
+        <button class="md:hidden text-white">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-screen flex flex-col justify-center items-center px-4 overflow-hidden">
+        <!-- Background decorative grid -->
+        <div class="absolute inset-0 z-0 opacity-20" style="background-image: linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px); background-size: 50px 50px;"></div>
+
+        <div class="z-10 text-center reveal-on-scroll">
+            <p class="text-sm md:text-base uppercase tracking-[0.5em] text-gray-400 mb-4">Portfolio</p>
+            <h1 class="text-6xl md:text-9xl font-bold mb-6 tracking-tighter">DAN NARAKA</h1>
+            <div class="relative inline-block mt-4">
+                <div class="absolute -inset-4 border border-white/30 skew-y-3"></div>
+                <p class="text-xl md:text-3xl font-light italic px-6 py-2 bg-black z-10 relative">
+                    "Think without the box"
+                </p>
+            </div>
+        </div>
+
+        <div class="absolute bottom-10 animate-bounce">
+            <i class="fas fa-chevron-down text-xl opacity-50"></i>
+        </div>
+    </header>
+
+    <!-- Articles Section -->
+    <section id="articles" class="py-24 px-6 md:px-20 border-t border-white/10">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl md:text-6xl font-bold mb-16 reveal-on-scroll">THOUGHTS.</h2>
+
+            <div class="space-y-12">
+                <!-- Article 1 -->
+                <article class="group cursor-pointer reveal-on-scroll border-b border-white/10 pb-8 hover:border-white transition-colors duration-300">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-4">
+                        <h3 class="text-2xl md:text-4xl font-light group-hover:pl-4 transition-all duration-300">The Death of Traditional UX</h3>
+                        <span class="text-gray-500 font-mono text-sm mt-2 md:mt-0">01.12.2023</span>
+                    </div>
+                    <p class="text-gray-400 max-w-2xl group-hover:text-gray-200 transition-colors">
+                        Exploring why grid-based layouts are failing in the age of spatial computing and AR interfaces.
+                    </p>
+                </article>
+
+                <!-- Article 2 -->
+                <article class="group cursor-pointer reveal-on-scroll border-b border-white/10 pb-8 hover:border-white transition-colors duration-300">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-4">
+                        <h3 class="text-2xl md:text-4xl font-light group-hover:pl-4 transition-all duration-300">Monochrome Aesthetics</h3>
+                        <span class="text-gray-500 font-mono text-sm mt-2 md:mt-0">15.11.2023</span>
+                    </div>
+                    <p class="text-gray-400 max-w-2xl group-hover:text-gray-200 transition-colors">
+                        How limiting your color palette actually expands your creative capabilities in web design.
+                    </p>
+                </article>
+
+                <!-- Article 3 -->
+                <article class="group cursor-pointer reveal-on-scroll border-b border-white/10 pb-8 hover:border-white transition-colors duration-300">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-4">
+                        <h3 class="text-2xl md:text-4xl font-light group-hover:pl-4 transition-all duration-300">Structural Brutalism</h3>
+                        <span class="text-gray-500 font-mono text-sm mt-2 md:mt-0">22.10.2023</span>
+                    </div>
+                    <p class="text-gray-400 max-w-2xl group-hover:text-gray-200 transition-colors">
+                        Breaking the box by exposing the raw code structure within the visual interface.
+                    </p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-24 px-6 md:px-20 bg-[#0a0a0a]">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex justify-between items-end mb-16 reveal-on-scroll">
+                <h2 class="text-4xl md:text-6xl font-bold">VISUALS.</h2>
+                <p class="text-gray-500 font-mono">Selected Works 2023-2024</p>
+            </div>
+
+            <!-- Masonry-ish Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Item 1 -->
+                <div class="group relative aspect-[3/4] overflow-hidden reveal-on-scroll bg-gray-900">
+                    <!-- Placeholder SVG for image -->
+                    <svg class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" preserveAspectRatio="none" viewBox="0 0 400 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="600" fill="#1a1a1a"/>
+                        <circle cx="200" cy="300" r="100" stroke="#333" stroke-width="2"/>
+                        <line x1="0" y1="0" x2="400" y2="600" stroke="#333" stroke-width="1"/>
+                    </svg>
+                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <span class="border border-white px-4 py-2 uppercase tracking-widest text-sm">View Project</span>
+                    </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="group relative aspect-square overflow-hidden reveal-on-scroll bg-gray-900 lg:translate-y-12">
+                    <svg class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" preserveAspectRatio="none" viewBox="0 0 400 400" fill="none">
+                        <rect width="400" height="400" fill="#1a1a1a"/>
+                        <rect x="100" y="100" width="200" height="200" stroke="#333" stroke-width="2"/>
+                    </svg>
+                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <span class="border border-white px-4 py-2 uppercase tracking-widest text-sm">View Project</span>
+                    </div>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="group relative aspect-[3/4] overflow-hidden reveal-on-scroll bg-gray-900">
+                    <svg class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" preserveAspectRatio="none" viewBox="0 0 400 600" fill="none">
+                        <rect width="400" height="600" fill="#1a1a1a"/>
+                        <path d="M0,600 Q200,300 400,600 T400,0" stroke="#333" stroke-width="2" fill="none"/>
+                    </svg>
+                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <span class="border border-white px-4 py-2 uppercase tracking-widest text-sm">View Project</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3D Assets Preview Section -->
+    <section id="assets" class="py-24 px-6 md:px-20 border-t border-white/10">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row gap-12">
+
+            <div class="md:w-1/3 reveal-on-scroll">
+                <h2 class="text-4xl md:text-6xl font-bold mb-6">3D ASSETS.</h2>
+                <p class="text-gray-400 mb-8">
+                    Interactive previews of current modeling projects. Drag to rotate, scroll to zoom.
+                </p>
+
+                <!-- Controls -->
+                <div class="space-y-4">
+                    <div class="p-4 border border-white/20 hover:border-white transition-colors cursor-pointer active-asset" onclick="changeModel('cube')">
+                        <h4 class="font-bold">01. The Tesseract</h4>
+                        <p class="text-xs text-gray-500">Procedural Geometry</p>
+                    </div>
+                    <div class="p-4 border border-white/20 hover:border-white transition-colors cursor-pointer" onclick="changeModel('sphere')">
+                        <h4 class="font-bold">02. Liquid Core</h4>
+                        <p class="text-xs text-gray-500">Shader Experiment</p>
+                    </div>
+                    <div class="p-4 border border-white/20 hover:border-white transition-colors cursor-pointer" onclick="changeModel('torus')">
+                        <h4 class="font-bold">03. Infinity Loop</h4>
+                        <p class="text-xs text-gray-500">Topology Study</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="md:w-2/3 reveal-on-scroll">
+                <!-- Three.js Canvas Container -->
+                <div id="canvas-container"></div>
+                <div class="flex justify-between mt-2 text-xs font-mono text-gray-500">
+                    <span>RENDER: WEBGL</span>
+                    <span>STATUS: LIVE</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 px-6 md:px-20 bg-white text-black">
+        <div class="max-w-4xl mx-auto text-center reveal-on-scroll">
+            <h2 class="text-5xl md:text-8xl font-bold mb-8 tracking-tighter">LET'S TALK.</h2>
+            <p class="text-xl mb-12 font-light">Have a project that requires thinking outside the container?</p>
+
+            <a href="mailto:dan@naraka.design" class="inline-block text-2xl md:text-4xl border-b-2 border-black pb-2 hover:opacity-50 transition-opacity mb-16">
+                dan@naraka.design
+            </a>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 font-mono text-sm uppercase tracking-widest border-t border-black/10 pt-12">
+                <a href="#" class="hover:underline">Instagram</a>
+                <a href="#" class="hover:underline">Twitter / X</a>
+                <a href="#" class="hover:underline">LinkedIn</a>
+                <a href="#" class="hover:underline">ArtStation</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-12 px-6 text-center md:text-left border-t border-white/10">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0">
+                <p class="font-bold text-lg">DAN NARAKA</p>
+                <p class="text-xs text-gray-500">© 2024. Think without the box.</p>
+            </div>
+            <div class="text-gray-500 text-sm">
+                Designed & Built with HTML5
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // --- 1. Scroll Reveal Animation ---
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal-on-scroll').forEach((el) => {
+            observer.observe(el);
+        });
+
+        // --- 2. Three.js 3D Viewer Implementation ---
+
+        let scene, camera, renderer, currentMesh;
+        let isDragging = false;
+        let previousMousePosition = {
+            x: 0,
+            y: 0
+        };
+        const container = document.getElementById('canvas-container');
+
+        function initThreeJS() {
+            // Scene setup
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a0a0a); // Dark gray background
+
+            // Fog for depth
+            scene.fog = new THREE.FogExp2(0x0a0a0a, 0.03);
+
+            // Camera
+            camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.z = 5;
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({
+                antialias: true,
+                alpha: true
+            });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0x404040); // Soft white light
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(1, 1, 2);
+            scene.add(directionalLight);
+
+            // Initial Model
+            loadModel('cube');
+
+            // Event Listeners for Interaction
+            container.addEventListener('mousedown', (e) => {
+                isDragging = true;
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+
+            container.addEventListener('mousemove', (e) => {
+                if (isDragging && currentMesh) {
+                    const deltaMove = {
+                        x: e.offsetX - previousMousePosition.x,
+                        y: e.offsetY - previousMousePosition.y
+                    };
+
+                    currentMesh.rotation.y += deltaMove.x * 0.01;
+                    currentMesh.rotation.x += deltaMove.y * 0.01;
+                }
+
+                previousMousePosition = {
+                    x: e.offsetX,
+                    y: e.offsetY
+                };
+            });
+
+            // Handle Resize
+            window.addEventListener('resize', onWindowResize, false);
+
+            // Start Loop
+            animate();
+        }
+
+        // Function to switch models
+        // NOTE: This is where you would load external .obj or .gltf files
+        function loadModel(type) {
+            if (currentMesh) {
+                scene.remove(currentMesh);
+            }
+
+            let geometry, material;
+
+            // Wireframe Material style
+            material = new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.8
+            });
+
+            // Solid material for contrast
+            const solidMaterial = new THREE.MeshPhongMaterial({
+                color: 0x111111,
+                flatShading: true,
+                shininess: 100
+            });
+
+            if (type === 'cube') {
+                // Represents a Tesseract / Box
+                geometry = new THREE.BoxGeometry(2, 2, 2);
+                currentMesh = new THREE.Group();
+                const wireframe = new THREE.Mesh(geometry, material);
+                const solid = new THREE.Mesh(new THREE.BoxGeometry(1.9, 1.9, 1.9), solidMaterial);
+                currentMesh.add(wireframe);
+                currentMesh.add(solid);
+
+            } else if (type === 'sphere') {
+                // Represents Liquid Core
+                geometry = new THREE.IcosahedronGeometry(1.5, 1);
+                currentMesh = new THREE.Mesh(geometry, material);
+
+            } else if (type === 'torus') {
+                // Represents Infinity
+                geometry = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
+                currentMesh = new THREE.Mesh(geometry, material);
+            }
+
+            // *** HOW TO ADD YOUR OWN ASSETS ***
+            // 1. Uncomment the GLTFLoader script in <head>
+            // 2. Use the following code:
+            /*
+            const loader = new THREE.GLTFLoader();
+            loader.load('path/to/your/model.gltf', function (gltf) {
+                currentMesh = gltf.scene;
+                scene.add(currentMesh);
+            });
+            */
+
+            scene.add(currentMesh);
+        }
+
+        // Global function to be called from HTML buttons
+        window.changeModel = function(type) {
+            loadModel(type);
+        }
+
+        function onWindowResize() {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (currentMesh) {
+                // Slow automatic rotation
+                currentMesh.rotation.x += 0.002;
+                currentMesh.rotation.y += 0.005;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // Initialize 3D when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            initThreeJS();
+        });
+    </script>
+</body>
+
+</html>
