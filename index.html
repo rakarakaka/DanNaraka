@@ -324,6 +324,67 @@
 
     <!-- Scripts -->
     <script>
+        // --- Project Data for Modal ---
+        const projects = {
+            'project1': {
+                title: 'Project 01: The Grid Breaker',
+                date: 'December 2023',
+                content: 'A detailed study on responsive chaos theory in modern web frameworks. This project explores how to use negative space and aggressive typography to challenge conventional screen boundaries and force a "non-linear" user experience.',
+                imagePlaceholder: 'https://placehold.co/1200x800/222/ddd?text=The+Grid+Breaker'
+            },
+            'project2': {
+                title: 'Project 02: Monolith Design',
+                date: 'November 2023',
+                content: 'An exploration into single-page application design focusing purely on structure and monochromatic elements. All interactions are based on hover and subtle depth changes to convey information hierarchy without relying on color.',
+                imagePlaceholder: 'https://placehold.co/800x800/111/fff?text=Monolith+Design'
+            },
+            'project3': {
+                title: 'Project 03: The Digital Ruin',
+                date: 'October 2023',
+                content: 'A conceptual piece representing digital decay. The design mimics corrupted files and fragmented memory, reflecting the transitory nature of digital art and the beauty in imperfection.',
+                imagePlaceholder: 'https://placehold.co/1200x1600/333/ccc?text=Digital+Ruin'
+            }
+        };
+
+        // --- Modal Functions ---
+        const modal = document.getElementById('project-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDate = document.getElementById('modal-date');
+        const modalContent = document.getElementById('modal-content');
+        const modalImageContainer = document.getElementById('modal-image-container');
+
+        function openModal(projectId) {
+            const project = projects[projectId];
+
+            // Populate content
+            modalTitle.textContent = project.title;
+            modalDate.textContent = project.date;
+            modalContent.textContent = project.content;
+
+            // Inject placeholder image
+            modalImageContainer.innerHTML = `
+                <img src="${project.imagePlaceholder}" alt="${project.title}" 
+                     class="w-full h-auto max-h-full object-contain rounded-lg shadow-xl"
+                     onerror="this.src='https://placehold.co/800x600/000/fff?text=Image+Load+Failed';">
+            `;
+
+            // Display modal with transition
+            modal.classList.remove('hidden');
+            // Timeout needed to trigger opacity transition
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+            }, 10);
+            document.body.style.overflow = 'hidden'; // Prevent background scroll
+        }
+
+        function closeModal() {
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300); // Wait for transition
+            document.body.style.overflow = ''; // Restore scroll
+        }
+
         // --- 1. Scroll Reveal Animation ---
         const observerOptions = {
             root: null,
