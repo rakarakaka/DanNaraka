@@ -439,38 +439,56 @@
             });
 
             if (type === 'cube') {
-                // Represents a Tesseract / Box
-                geometry = new THREE.BoxGeometry(2, 2, 2);
-                currentMesh = new THREE.Group();
-                const wireframe = new THREE.Mesh(geometry, material);
-                const solid = new THREE.Mesh(new THREE.BoxGeometry(1.9, 1.9, 1.9), solidMaterial);
-                currentMesh.add(wireframe);
-                currentMesh.add(solid);
+                // Initialize the Loader
+                const loader = new THREE.GLTFLoader();
 
-            } else if (type === 'sphere') {
-                // Represents Liquid Core
-                geometry = new THREE.IcosahedronGeometry(1.5, 1);
-                currentMesh = new THREE.Mesh(geometry, material);
+                // Load your file (Make sure the file is in the same folder as your HTML)
+                loader.load('indomi.glb', function(gltf) {
 
-            } else if (type === 'torus') {
-                // Represents Infinity
-                geometry = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
-                currentMesh = new THREE.Mesh(geometry, material);
+                    currentMesh = gltf.scene;
+
+                    // OPTIONAL: Scale it up or down if it's too big/small
+                    currentMesh.scale.set(1, 1, 1);
+
+                    // OPTIONAL: Move it down if it's floating too high
+                    currentMesh.position.y = -1;
+
+                    // Add it to the scene
+                    scene.add(currentMesh);
+
+                }, undefined, function(error) {
+                    console.error('An error happened loading the model:', error);
+                });
+
+                // Note: We don't use 'geometry' or 'material' variables here 
+                // because the GLB file has its own colors and shapes inside it.
             }
 
-            // *** HOW TO ADD YOUR OWN ASSETS ***
-            // 1. Uncomment the GLTFLoader script in <head>
-            // 2. Use the following code:
-            /*
-            const loader = new THREE.GLTFLoader();
-            loader.load('path/to/your/model.gltf', function (gltf) {
-                currentMesh = gltf.scene;
-                scene.add(currentMesh);
-            });
-            */
-
-            scene.add(currentMesh);
         }
+        if (type === 'sphere') {
+            // Represents Liquid Core
+            geometry = new THREE.IcosahedronGeometry(1.5, 1);
+            currentMesh = new THREE.Mesh(geometry, material);
+
+        }
+        if (type === 'torus') {
+            // Represents Infinity
+            geometry = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
+            currentMesh = new THREE.Mesh(geometry, material);
+        }
+
+        // *** HOW TO ADD YOUR OWN ASSETS ***
+        // 1. Uncomment the GLTFLoader script in <head>
+        // 2. Use the following code:
+        /*
+        const loader = new THREE.GLTFLoader();
+        loader.load('path/to/your/model.gltf', function (gltf) {
+            currentMesh = gltf.scene;
+            scene.add(currentMesh);
+        });
+        */
+
+        scene.add(currentMesh);
 
         // Global function to be called from HTML buttons
         window.changeModel = function(type) {
