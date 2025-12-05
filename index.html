@@ -541,6 +541,9 @@
 
         function animate() {
             requestAnimationFrame(animate);
+            if (currentMesh) {
+                currentMesh.rotation.y += 0.002;
+            }
             renderer.render(scene, camera);
         }
 
