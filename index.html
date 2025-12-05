@@ -460,9 +460,7 @@
                 // Represents Infinity
                 geometry = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
                 currentMesh = new THREE.Mesh(geometry, material);
-            }
-
-            if (type === 'noodle') {
+            } else if (type === 'noodle') {
                 // Initialize the Loader
                 const loader = new THREE.GLTFLoader();
 
