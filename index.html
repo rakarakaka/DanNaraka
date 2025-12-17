@@ -488,16 +488,30 @@
 
                 // Load your file (Make sure the file is in the same folder as your HTML)
                 loader.load('3Dasset/indomifinalreal.glb', function(gltf) {
+                    // 1. Clean up old model
                     if (currentMesh) {
                         scene.remove(currentMesh);
                     }
 
                     currentMesh = gltf.scene;
 
+                    // 2. FORCE TEXTURE UPDATE (This is what you are missing!)
+                    currentMesh.traverse((child) => {
+                        if (child.isMesh) {
+                            // This fixes blurry or wrongly mapped textures
+                            if (child.material.map) {
+                                child.material.map.anisotropy = 16; // Makes it sharp
+                                child.material.map.needsUpdate = true; // Forces the UV to reset
+                            }
+                        }
+                    });
+
+                    // 3. Position and Add
                     currentMesh.scale.set(1, 1, 1);
                     currentMesh.position.y = -1;
 
-                    scene.add(currentMesh);
+                }, undefined, function(error) {
+                    console.error('An error happened:', error);
                 });
 
                 // Note: We don't use 'geometry' or 'material' variables here 
