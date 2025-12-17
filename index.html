@@ -176,6 +176,7 @@
                             experience as a Freelance Graphic Designer, I am well-versed in handling diverse projects, ranging from poster design and photography to professional photo and video editing. My creativity has been recognized through several
                             key achievements, including developing one of the best amateur games within my campus environment and producing a short film that meets industry standards in my field of study.
                             <br>
+                            <article class="group cursor-pointer reveal-on-scroll border-b border-white/10 pb-8 hover:border-white transition-colors duration-300"></article>
                             <br>
                             <!-- Article 2 skill -->
                             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-4">
@@ -247,7 +248,7 @@
             <div class="md:w-1/3 reveal-on-scroll">
                 <h2 class="text-4xl md:text-6xl font-bold mb-6">3D ASSETS.</h2>
                 <p class="text-gray-400 mb-8">
-                    Selected 3D object.
+                    Selected3D object preview.
                 </p>
 
                 <!-- Controls -->
@@ -488,30 +489,18 @@
 
                 // Load your file (Make sure the file is in the same folder as your HTML)
                 loader.load('3Dasset/indomifinalreal.glb', function(gltf) {
-                    // 1. Clean up old model
+                    // SECURITY CHECK: Before adding, delete whatever is currently there
+                    // This handles the "I clicked too fast" bug
                     if (currentMesh) {
                         scene.remove(currentMesh);
                     }
 
                     currentMesh = gltf.scene;
 
-                    // 2. FORCE TEXTURE UPDATE (This is what you are missing!)
-                    currentMesh.traverse((child) => {
-                        if (child.isMesh) {
-                            // This fixes blurry or wrongly mapped textures
-                            if (child.material.map) {
-                                child.material.map.anisotropy = 16; // Makes it sharp
-                                child.material.map.needsUpdate = true; // Forces the UV to reset
-                            }
-                        }
-                    });
-
-                    // 3. Position and Add
                     currentMesh.scale.set(1, 1, 1);
                     currentMesh.position.y = -1;
 
-                }, undefined, function(error) {
-                    console.error('An error happened:', error);
+                    scene.add(currentMesh);
                 });
 
                 // Note: We don't use 'geometry' or 'material' variables here 
