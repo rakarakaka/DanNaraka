@@ -477,25 +477,22 @@
                     // 2. THE FIX: Reset Material Settings
                     currentMesh.traverse((child) => {
                         if (child.isMesh) {
-                            // Fix A: Turn OFF shadows (Test if this removes the noise)
                             child.castShadow = false;
                             child.receiveShadow = false;
 
-                            // Fix B: Ignore Vertex Colors (Common cause of black glitches)
-                            if (child.material) {
-                                child.material.vertexColors = false;
+                            const mat = child.material;
 
-                                // Fix C: Remove "shiny" black look
-                                child.material.metalness = 0.1; // Low metalness = cloth
-                                child.material.roughness = 0.8; // High roughness = cloth
+                            if (mat) {
+                                mat.vertexColors = false;
+                                mat.metalness = 0.0; // cloth
+                                mat.roughness = 0.9; // cloth
+                                mat.side = THREE.DoubleSide;
+                                mat.needsUpdate = true;
 
-                                // Fix D: Ensure texture is visible from both sides
-                                child.material.side = THREE.DoubleSide;
-
-                                // Fix E: Force Texture Update
-                                if (child.material.map) {
-                                    child.material.map.anisotropy = 16;
-                                    child.material.map.needsUpdate = true;
+                                if (mat.map) {
+                                    mat.map.anisotropy = renderer.capabilities.getMaxAnisotropy();
+                                    mat.map.flipY = false; // VERY IMPORTANT
+                                    mat.map.needsUpdate = true;
                                 }
                             }
                         }
