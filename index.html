@@ -466,47 +466,47 @@
                 currentMesh = new THREE.Mesh(geometry, material);
 
             } else if (type === 'shirt') {
-                // Initialize the Loader
                 const loader = new THREE.GLTFLoader();
+                loader.load('3Dasset/CropTop.glb', function(gltf) {
 
-                // Load your file
-                loader.load('3Dasset/CropTopFinal.glb', function(gltf) {
-
-                    // 1. Clean up old model
-                    if (currentMesh) {
-                        scene.remove(currentMesh);
-                    }
+                    // 1. Clear previous
+                    if (currentMesh) scene.remove(currentMesh);
 
                     currentMesh = gltf.scene;
 
-                    // 2. FORCE TEXTURE & MATERIAL UPDATE (This fixes the "broken" look)
+                    // 2. THE FIX: Reset Material Settings
                     currentMesh.traverse((child) => {
                         if (child.isMesh) {
-                            // A. Fix the Texture Map
-                            if (child.material.map) {
-                                child.material.map.anisotropy = 16; // Makes texture sharp
-                                child.material.map.needsUpdate = true;
+                            // Fix A: Turn OFF shadows (Test if this removes the noise)
+                            child.castShadow = false;
+                            child.receiveShadow = false;
+
+                            // Fix B: Ignore Vertex Colors (Common cause of black glitches)
+                            if (child.material) {
+                                child.material.vertexColors = false;
+
+                                // Fix C: Remove "shiny" black look
+                                child.material.metalness = 0.1; // Low metalness = cloth
+                                child.material.roughness = 0.8; // High roughness = cloth
+
+                                // Fix D: Ensure texture is visible from both sides
+                                child.material.side = THREE.DoubleSide;
+
+                                // Fix E: Force Texture Update
+                                if (child.material.map) {
+                                    child.material.map.anisotropy = 16;
+                                    child.material.map.needsUpdate = true;
+                                }
                             }
-
-                            // B. Fix for Clothing (IMPORTANT!)
-                            // This tells 3D to paint both the inside and outside of the shirt
-                            child.material.side = THREE.DoubleSide;
-
-                            // C. Fix "Super Shiny" look (Optional)
-                            // If the shirt looks like plastic/chrome, uncomment these lines:
-                            // child.material.metalness = 0; // 0 = non-metal (fabric)
-                            // child.material.roughness = 0.8; // Higher = duller fabric
                         }
                     });
 
-                    // 3. Position and Add
                     currentMesh.scale.set(1, 1, 1);
                     currentMesh.position.y = -1;
-
                     scene.add(currentMesh);
 
                 }, undefined, function(error) {
-                    console.error('An error happened loading the shirt:', error);
+                    console.error('Error:', error);
                 });
 
             } else if (type === 'noodle') {
