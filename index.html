@@ -248,9 +248,9 @@
                         <h4 class="font-bold">02. Liquid Core</h4>
                         <p class="text-xs text-gray-500">Shader Experiment</p>
                     </div>
-                    <div class="p-4 border border-white/20 hover:border-white transition-colors cursor-pointer" onclick="changeModel('torus')">
-                        <h4 class="font-bold">03. Infinity Loop</h4>
-                        <p class="text-xs text-gray-500">Topology Study</p>
+                    <div class="p-4 border border-white/20 hover:border-white transition-colors cursor-pointer" onclick="changeModel('shirt')">
+                        <h4 class="font-bold">03. Style</h4>
+                        <p class="text-xs text-gray-500">shirt</p>
                     </div>
                     <div class="p-4 border border-white/20 hover:border-white transition-colors cursor-pointer" onclick="changeModel('noodle')">
                         <h4 class="font-bold">04. noodles</h4>
@@ -465,7 +465,7 @@
                 geometry = new THREE.IcosahedronGeometry(1.5, 1);
                 currentMesh = new THREE.Mesh(geometry, material);
 
-            } else if (type === 'noodle') {
+            } else if (type === 'shirt') {
                 // Initialize the Loader
                 const loader = new THREE.GLTFLoader();
 
