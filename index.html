@@ -469,18 +469,48 @@
                 // Initialize the Loader
                 const loader = new THREE.GLTFLoader();
 
-                // Load your file (Make sure the file is in the same folder as your HTML)
+            } else if (type === 'shirt') {
+                // Initialize the Loader
+                const loader = new THREE.GLTFLoader();
+
+                // Load your file
                 loader.load('3Dasset/CropTop.glb', function(gltf) {
+
+                    // 1. Clean up old model
                     if (currentMesh) {
                         scene.remove(currentMesh);
                     }
 
                     currentMesh = gltf.scene;
 
+                    // 2. FORCE TEXTURE & MATERIAL UPDATE (This fixes the "broken" look)
+                    currentMesh.traverse((child) => {
+                        if (child.isMesh) {
+                            // A. Fix the Texture Map
+                            if (child.material.map) {
+                                child.material.map.anisotropy = 16; // Makes texture sharp
+                                child.material.map.needsUpdate = true;
+                            }
+
+                            // B. Fix for Clothing (IMPORTANT!)
+                            // This tells 3D to paint both the inside and outside of the shirt
+                            child.material.side = THREE.DoubleSide;
+
+                            // C. Fix "Super Shiny" look (Optional)
+                            // If the shirt looks like plastic/chrome, uncomment these lines:
+                            // child.material.metalness = 0; // 0 = non-metal (fabric)
+                            // child.material.roughness = 0.8; // Higher = duller fabric
+                        }
+                    });
+
+                    // 3. Position and Add
                     currentMesh.scale.set(1, 1, 1);
                     currentMesh.position.y = -1;
 
                     scene.add(currentMesh);
+
+                }, undefined, function(error) {
+                    console.error('An error happened loading the shirt:', error);
                 });
 
             } else if (type === 'noodle') {
