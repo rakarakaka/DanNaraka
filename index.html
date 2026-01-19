@@ -464,50 +464,20 @@
                 // Initialize the Loader
                 const loader = new THREE.GLTFLoader();
 
-                loader.load('3Dasset/vendmach.glb', function(gltf) { // <--- Check filename
+                // Load your file (Make sure the file is in the same folder as your HTML)
+                loader.load('3Dasset/vendmach.glb', function(gltf) {
+                    if (currentMesh) {
+                        scene.remove(currentMesh);
+                    }
 
-                    if (currentMesh) scene.remove(currentMesh);
                     currentMesh = gltf.scene;
 
-                    currentMesh.traverse((child) => {
-                        if (child.isMesh) {
-                            // --- FIX 1: DELETE "GHOST" COLORS ---
-                            // Many downloaded models have hidden "Vertex Colors" that turn them white.
-                            // We tell Three.js to ignore them.
-                            if (child.geometry.attributes.color) {
-                                child.geometry.deleteAttribute('color');
-                            }
-
-                            // --- FIX 2: RESET MATERIAL SETTINGS ---
-                            if (child.material) {
-                                child.material.vertexColors = false; // Disable vertex colors
-                                child.material.color.setHex(0xffffff); // Reset base color
-                                child.material.emissive = new THREE.Color(0x000000); // Stop it from glowing
-                                child.material.metalness = 0.1; // Make it look like plastic/paint
-                                child.material.roughness = 0.5; // Not too shiny
-
-                                // --- FIX 3: FORCE VISIBILITY ---
-                                child.material.side = THREE.DoubleSide; // Draw both sides of walls
-                                child.material.transparent = false; // Force it to be solid
-                                child.material.opacity = 1.0;
-
-                                // --- FIX 4: SHARPEN TEXTURE ---
-                                if (child.material.map) {
-                                    child.material.map.anisotropy = 16;
-                                    child.material.map.needsUpdate = true;
-                                }
-                            }
-                        }
-                    });
-
-                    // Scale and Position
                     currentMesh.scale.set(1, 1, 1);
                     currentMesh.position.y = -1;
-                    scene.add(currentMesh);
 
-                }, undefined, function(error) {
-                    console.error('Error loading vending machine:', error);
+                    scene.add(currentMesh);
                 });
+
 
             } else if (type === 'shirt') {
                 const loader = new THREE.GLTFLoader();
