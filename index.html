@@ -464,7 +464,7 @@
                 // Initialize the Loader
                 const loader = new THREE.GLTFLoader();
 
-                loader.load('3Dasset/retro_lowres_vendmach.glb', function(gltf) { // <--- Check filename
+                loader.load('3Dasset/vendmach.glb', function(gltf) { // <--- Check filename
 
                     if (currentMesh) scene.remove(currentMesh);
                     currentMesh = gltf.scene;
