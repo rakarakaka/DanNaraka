@@ -244,7 +244,7 @@
                         <h4 class="font-bold">01. The Tesseract</h4>
                         <p class="text-xs text-gray-500">Procedural Geometry</p>
                     </div>
-                    <div class="p-4 border border-white/20 hover:border-white transition-colors cursor-pointer" onclick="changeModel('sphere')">
+                    <div class="p-4 border border-white/20 hover:border-white transition-colors cursor-pointer" onclick="changeModel('vendingmachine')">
                         <h4 class="font-bold">02. Liquid Core</h4>
                         <p class="text-xs text-gray-500">Shader Experiment</p>
                     </div>
@@ -460,10 +460,47 @@
                 currentMesh.add(wireframe);
                 currentMesh.add(solid);
 
-            } else if (type === 'sphere') {
-                // Represents Liquid Core
-                geometry = new THREE.IcosahedronGeometry(1.5, 1);
-                currentMesh = new THREE.Mesh(geometry, material);
+            } else if (type === 'vendingmachine') {
+                const loader = new THREE.GLTFLoader();
+                loader.load('3Dasset/retro_lowres_vendmach.glb', function(gltf) {
+
+                    // 1. Clear previous
+                    if (currentMesh) scene.remove(currentMesh);
+
+                    currentMesh = gltf.scene;
+
+                    // 2. THE FIX: Reset Material Settings
+                    currentMesh.traverse((child) => {
+                        if (child.isMesh) {
+                            child.castShadow = false;
+                            child.receiveShadow = false;
+
+                            const mat = child.material;
+
+                            if (mat) {
+                                mat.vertexColors = false;
+                                mat.metalness = 0.0; // cloth
+                                mat.roughness = 0.9; // cloth
+                                mat.side = THREE.DoubleSide;
+                                mat.needsUpdate = true;
+
+                                if (mat.map) {
+                                    mat.map.anisotropy = renderer.capabilities.getMaxAnisotropy();
+                                    mat.map.flipY = false; // VERY IMPORTANT
+                                    mat.map.needsUpdate = true;
+                                }
+                            }
+                        }
+                    });
+
+                    currentMesh.scale.set(1, 1, 1);
+                    currentMesh.position.y = -1;
+                    scene.add(currentMesh);
+
+                }, undefined, function(error) {
+                    console.error('Error:', error);
+                });
+
 
             } else if (type === 'shirt') {
                 const loader = new THREE.GLTFLoader();
