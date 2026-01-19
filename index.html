@@ -240,9 +240,9 @@
 
                 <!-- Controls -->
                 <div class="space-y-4">
-                    <div class="p-4 border border-white/20 hover:border-white transition-colors cursor-pointer " onclick="changeModel('cube')">
-                        <h4 class="font-bold">01. The Tesseract</h4>
-                        <p class="text-xs text-gray-500">Procedural Geometry</p>
+                    <div class="p-4 border border-white/20 hover:border-white transition-colors cursor-pointer " onclick="changeModel('bottle')">
+                        <h4 class="font-bold">01. Product</h4>
+                        <p class="text-xs text-gray-500">Parfume Bottle</p>
                     </div>
                     <div class="p-4 border border-white/20 hover:border-white transition-colors cursor-pointer" onclick="changeModel('vendingmachine')">
                         <h4 class="font-bold">02. Game Asset</h4>
@@ -451,14 +451,23 @@
                 shininess: 100
             });
 
-            if (type === 'cube') {
-                // Represents a Tesseract / Box
-                geometry = new THREE.BoxGeometry(2, 2, 2);
-                currentMesh = new THREE.Group();
-                const wireframe = new THREE.Mesh(geometry, material);
-                const solid = new THREE.Mesh(new THREE.BoxGeometry(1.9, 1.9, 1.9), solidMaterial);
-                currentMesh.add(wireframe);
-                currentMesh.add(solid);
+            if (type === 'bottle') {
+                // Initialize the Loader
+                const loader = new THREE.GLTFLoader();
+
+                // Load your file (Make sure the file is in the same folder as your HTML)
+                loader.load('3Dasset/balensinaga.glb', function(gltf) {
+                    if (currentMesh) {
+                        scene.remove(currentMesh);
+                    }
+
+                    currentMesh = gltf.scene;
+
+                    currentMesh.scale.set(1, 1, 1);
+                    currentMesh.position.y = -1;
+
+                    scene.add(currentMesh);
+                });
 
             } else if (type === 'vendingmachine') {
                 // Initialize the Loader
