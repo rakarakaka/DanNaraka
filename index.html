@@ -464,33 +464,44 @@
                 // Initialize the Loader
                 const loader = new THREE.GLTFLoader();
 
-                // ... inside your loader function ...
-                loader.load('3Dasset/retro_lowres_vendmach.glb', function(gltf) { // <--- Check filename!
+                loader.load('3Dasset/retro_lowres_vendmach.glb', function(gltf) { // <--- Check filename
 
                     if (currentMesh) scene.remove(currentMesh);
                     currentMesh = gltf.scene;
 
-                    // --- THE FIX STARTS HERE ---
                     currentMesh.traverse((child) => {
                         if (child.isMesh) {
-                            // 1. Force Double Side (Fixes "Invisible Walls")
-                            child.material.side = THREE.DoubleSide;
+                            // --- FIX 1: DELETE "GHOST" COLORS ---
+                            // Many downloaded models have hidden "Vertex Colors" that turn them white.
+                            // We tell Three.js to ignore them.
+                            if (child.geometry.attributes.color) {
+                                child.geometry.deleteAttribute('color');
+                            }
 
-                            // 2. Force Opaque (Fixes "Ghost/Glass" look)
-                            // Sometimes imported models accidentally have 'transparent' turned on.
-                            child.material.transparent = false;
-                            child.material.opacity = 1.0;
+                            // --- FIX 2: RESET MATERIAL SETTINGS ---
+                            if (child.material) {
+                                child.material.vertexColors = false; // Disable vertex colors
+                                child.material.color.setHex(0xffffff); // Reset base color
+                                child.material.emissive = new THREE.Color(0x000000); // Stop it from glowing
+                                child.material.metalness = 0.1; // Make it look like plastic/paint
+                                child.material.roughness = 0.5; // Not too shiny
 
-                            // 3. Optional: Fix Textures if they look blurry or dark
-                            if (child.material.map) {
-                                child.material.map.anisotropy = 16;
-                                child.material.map.needsUpdate = true;
+                                // --- FIX 3: FORCE VISIBILITY ---
+                                child.material.side = THREE.DoubleSide; // Draw both sides of walls
+                                child.material.transparent = false; // Force it to be solid
+                                child.material.opacity = 1.0;
+
+                                // --- FIX 4: SHARPEN TEXTURE ---
+                                if (child.material.map) {
+                                    child.material.map.anisotropy = 16;
+                                    child.material.map.needsUpdate = true;
+                                }
                             }
                         }
                     });
-                    // ---------------------------
 
-                    currentMesh.scale.set(1, 1, 1); // Adjust scale if needed
+                    // Scale and Position
+                    currentMesh.scale.set(1, 1, 1);
                     currentMesh.position.y = -1;
                     scene.add(currentMesh);
 
