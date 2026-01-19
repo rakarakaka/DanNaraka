@@ -464,18 +464,38 @@
                 // Initialize the Loader
                 const loader = new THREE.GLTFLoader();
 
-                // Load your file (Make sure the file is in the same folder as your HTML)
-                loader.load('3Dasset/retro_lowres_vendmach.glb', function(gltf) {
-                    if (currentMesh) {
-                        scene.remove(currentMesh);
-                    }
+                // ... inside your loader function ...
+                loader.load('3Dasset/retro_lowres_vendmach.glb', function(gltf) { // <--- Check filename!
 
+                    if (currentMesh) scene.remove(currentMesh);
                     currentMesh = gltf.scene;
 
-                    currentMesh.scale.set(1, 1, 1);
-                    currentMesh.position.y = -1;
+                    // --- THE FIX STARTS HERE ---
+                    currentMesh.traverse((child) => {
+                        if (child.isMesh) {
+                            // 1. Force Double Side (Fixes "Invisible Walls")
+                            child.material.side = THREE.DoubleSide;
 
+                            // 2. Force Opaque (Fixes "Ghost/Glass" look)
+                            // Sometimes imported models accidentally have 'transparent' turned on.
+                            child.material.transparent = false;
+                            child.material.opacity = 1.0;
+
+                            // 3. Optional: Fix Textures if they look blurry or dark
+                            if (child.material.map) {
+                                child.material.map.anisotropy = 16;
+                                child.material.map.needsUpdate = true;
+                            }
+                        }
+                    });
+                    // ---------------------------
+
+                    currentMesh.scale.set(1, 1, 1); // Adjust scale if needed
+                    currentMesh.position.y = -1;
                     scene.add(currentMesh);
+
+                }, undefined, function(error) {
+                    console.error('Error loading vending machine:', error);
                 });
 
             } else if (type === 'shirt') {
