@@ -461,46 +461,22 @@
                 currentMesh.add(solid);
 
             } else if (type === 'vendingmachine') {
+                // Initialize the Loader
                 const loader = new THREE.GLTFLoader();
-                loader.load('3Dasset/retro_lowres_vendmach.glb', function(gltf) {
 
-                    // 1. Clear previous
-                    if (currentMesh) scene.remove(currentMesh);
+                // Load your file (Make sure the file is in the same folder as your HTML)
+                loader.load('3Dasset/retro_lowres_vendmach).glb', function(gltf) {
+                    if (currentMesh) {
+                        scene.remove(currentMesh);
+                    }
 
                     currentMesh = gltf.scene;
 
-                    // 2. THE FIX: Reset Material Settings
-                    currentMesh.traverse((child) => {
-                        if (child.isMesh) {
-                            child.castShadow = false;
-                            child.receiveShadow = false;
-
-                            const mat = child.material;
-
-                            if (mat) {
-                                mat.vertexColors = false;
-                                mat.metalness = 0.0; // cloth
-                                mat.roughness = 0.9; // cloth
-                                mat.side = THREE.DoubleSide;
-                                mat.needsUpdate = true;
-
-                                if (mat.map) {
-                                    mat.map.anisotropy = renderer.capabilities.getMaxAnisotropy();
-                                    mat.map.flipY = false; // VERY IMPORTANT
-                                    mat.map.needsUpdate = true;
-                                }
-                            }
-                        }
-                    });
-
                     currentMesh.scale.set(1, 1, 1);
                     currentMesh.position.y = -1;
+
                     scene.add(currentMesh);
-
-                }, undefined, function(error) {
-                    console.error('Error:', error);
                 });
-
 
             } else if (type === 'shirt') {
                 const loader = new THREE.GLTFLoader();
