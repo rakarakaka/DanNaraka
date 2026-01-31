@@ -283,4 +283,54 @@ function animate() {
 // Initialize 3D when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     initThreeJS();
+    const video = document.querySelector('[data-autoplay]');
+    if (video) {
+        const tryPlay = () => {
+            const playAttempt = video.play();
+            if (playAttempt && typeof playAttempt.catch === 'function') {
+                playAttempt.catch(() => {});
+            }
+        };
+
+        // Ensure browser autoplay rules are satisfied.
+        video.muted = true;
+        video.setAttribute('muted', '');
+        video.setAttribute('autoplay', '');
+        video.setAttribute('playsinline', '');
+        video.autoplay = true;
+
+        // Try on load and when media can play.
+        tryPlay();
+        video.addEventListener('loadeddata', tryPlay);
+        video.addEventListener('canplay', tryPlay);
+
+        const videoObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    tryPlay();
+                }
+            });
+        }, { threshold: 0.5 });
+
+        videoObserver.observe(video);
+
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                tryPlay();
+            }
+        });
+
+        // Autoplay can still require a user gesture; retry on first interaction.
+        const resumeOnInteract = () => {
+            tryPlay();
+            window.removeEventListener('click', resumeOnInteract);
+            window.removeEventListener('touchstart', resumeOnInteract);
+            window.removeEventListener('scroll', resumeOnInteract);
+            window.removeEventListener('keydown', resumeOnInteract);
+        };
+        window.addEventListener('click', resumeOnInteract, { once: true });
+        window.addEventListener('touchstart', resumeOnInteract, { once: true });
+        window.addEventListener('scroll', resumeOnInteract, { once: true });
+        window.addEventListener('keydown', resumeOnInteract, { once: true });
+    }
 });
