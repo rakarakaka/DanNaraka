@@ -96,17 +96,21 @@
                     <p class="text-gray-400 max-w-2xl group-hover:text-gray-200 transition-colors mb-6">
                         Trailer and report for my 2D game project.
                     </p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
-                        <a href="Video/Trailer%20Merapah.mov" target="_blank" class="border border-white/20 p-4 hover:border-white transition-colors">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl">
+                        <div class="border border-white/20 p-4">
                             <p class="text-xs uppercase tracking-widest text-gray-400">Video</p>
-                            <h4 class="text-lg font-semibold">Trailer Merapah</h4>
-                            <p class="text-sm text-gray-400 mt-2">Click to play</p>
-                        </a>
-                        <a href="Article/Format%20Laporan%20Proyek%20GamePGD_RJ23A_Merapah_2025.pdf" target="_blank" class="border border-white/20 p-4 hover:border-white transition-colors">
+                            <h4 class="text-lg font-semibold mb-3">Trailer Merapah</h4>
+                            <video class="w-full h-56 md:h-64 bg-black" controls preload="metadata">
+                                <source src="Video/Trailer%20Merapah.mov" type="video/quicktime">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <div class="border border-white/20 p-4">
                             <p class="text-xs uppercase tracking-widest text-gray-400">Article</p>
-                            <h4 class="text-lg font-semibold">Project Report</h4>
-                            <p class="text-sm text-gray-400 mt-2">Click to open PDF</p>
-                        </a>
+                            <h4 class="text-lg font-semibold mb-3">Project Report</h4>
+                            <iframe class="w-full h-56 md:h-64 bg-black" title="Project Report PDF" src="Article/Format%20Laporan%20Proyek%20GamePGD_RJ23A_Merapah_2025.pdf"></iframe>
+                            <p class="text-xs text-gray-500 mt-2">If the PDF doesn’t load, ensure the file is in the Article folder.</p>
+                        </div>
                     </div>
                 </article>
                 </article>
