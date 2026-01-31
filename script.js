@@ -17,6 +17,38 @@ document.querySelectorAll('.reveal-on-scroll').forEach((el) => {
     observer.observe(el);
 });
 
+// --- 1b. Gallery Show More Toggle ---
+const galleryToggle = document.getElementById('gallery-toggle');
+if (galleryToggle) {
+    const hiddenItems = Array.from(document.querySelectorAll('.gallery-item--hidden'));
+    let expanded = false;
+
+    const updateGalleryToggle = () => {
+        hiddenItems.forEach((item) => {
+            item.classList.toggle('gallery-item--hidden', !expanded);
+        });
+        galleryToggle.textContent = expanded ? 'Show less' : 'Show more';
+        galleryToggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    };
+
+    galleryToggle.addEventListener('click', () => {
+        expanded = !expanded;
+        updateGalleryToggle();
+
+        if (!expanded) {
+            const gallerySection = document.getElementById('gallery');
+            if (gallerySection) {
+                gallerySection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+    });
+
+    updateGalleryToggle();
+}
+
 // --- 2. Three.js 3D Viewer Implementation ---
 
 let scene, camera, renderer, currentMesh;

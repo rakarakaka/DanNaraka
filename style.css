@@ -80,6 +80,10 @@ h3,
     transform-origin: bottom left;
 }
 
+.gallery-item--hidden {
+    display: none;
+}
+
 /* 3D Container */
 #canvas-container {
     width: 100%;
